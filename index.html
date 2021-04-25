@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello Cube</title>
+    <title>The boat</title>
+	<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -13,63 +14,115 @@
 
         //creating scene
         var scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x70ecf5);
 
         //add camera
         var camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth/window.innerHeight
         );
+		camera.position.z = 5;
 
-        //renderer
-        var renderer = new THREE.WebGLRenderer();
+        // Renderer
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+		renderer.setClearColor(0x70ecf5);
         renderer.setSize(window.innerWidth, window.innerHeight);
+
         document.body.appendChild(renderer.domElement);
 
-        var cubo = new THREE.BoxGeometry(5,1,3);
-        var material = new THREE.MeshBasicMaterial({color: 0x7f3703 /*, wireframe: true*/} );
-        var cube = new THREE.Mesh(cubo, material);
+		// Make the canvas to ajust automatically (responsive)
+		window.addEventListener('resize', () => {
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+		});
 
-        scene.add(cube);
+		/* Creation of basic figures */
+		// Variables for figures
+		var geometry, material, figure;
 
-        cubo = new THREE.BoxGeometry(4,0.75,3);
-        material = new THREE.MeshBasicMaterial({color: 0x7f3703 /*, wireframe: true*/} );
-        cube = new THREE.Mesh(cubo, material);
+        // Barco
+        geometry = new THREE.BoxGeometry(5,1,1);
+        material = new THREE.MeshBasicMaterial({color: 0x7f3703} );
+        figure = new THREE.Mesh(geometry, material);
+		figure.position.y = -2.5
+        scene.add(figure);
 
-        cube.position.y = -0.5
+        // barco
+        geometry = new THREE.BoxGeometry(4,0.75,1);
+        material = new THREE.MeshBasicMaterial({color: 0x7f3703} );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = -3
+        scene.add(figure);
 
-        scene.add(cube);
-
-        cubo = new THREE.BoxGeometry(0.5,3, 0.5);
+		// asta del barco
+        geometry = new THREE.CylinderGeometry( .1, .1, 5);
         material = new THREE.MeshBasicMaterial({color: 0x4d1a00} );
-        cube = new THREE.Mesh(cubo, material);
-        cube.position.y = 1.5;
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = .5;
+        scene.add(figure);
+
+		// Vela de arriba
+        geometry = new THREE.BoxGeometry(7,1.2,0);
+        material = new THREE.MeshBasicMaterial({color: 0xffffff} );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = 2.4;
+        scene.add(figure);
+
+        // Vela de en medio
+        geometry = new THREE.BoxGeometry(6,1.2,0);
+        material = new THREE.MeshBasicMaterial({color: 0xffffff} );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = 1;
+        scene.add(figure);
+
+        // Vela de en abajo
+        geometry = new THREE.BoxGeometry(5,.9,0);
+        material = new THREE.MeshBasicMaterial({color: 0xffffff} );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = -.3;
+        scene.add(figure);
+
+        // Cesto
+		geometry = new THREE.CylinderGeometry(.3, .2, .6);
+		material = new THREE.MeshBasicMaterial({color: 0x4d1a00} );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.y = .1
+		scene.add(figure);
+
+        // Muelle
+        geometry = new THREE.BoxGeometry(1,.9,4);
+        material = new THREE.MeshLambertMaterial( );
+        figure = new THREE.Mesh(geometry, material);
+        figure.position.x = -4.3;
+        figure.position.y = -1.8;
+        scene.add(figure);
 
 
-        scene.add(cube);
+        geometry = new THREE.SphereGeometry( .5, 32, 32);
+        material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+        figure = new THREE.Mesh( geometry, material );
+        figure.position.x = 5.4;
+        figure.position.y = 2;
+        scene.add(figure);
+
+		// Luz
+		var light = new THREE.PointLight(0xFFFFFF, 1, 500);
+		light.position.set(10, 0, 25);
+		scene.add(light);
+		/* END - Creation of basic figures */
 
 
-
-
-        camera.position.z = 5;
-
+		// Method to re scale 3D objects
         var animate = function(){
             requestAnimationFrame(animate);
-
             /*scene.traverse(function(object){
                 if(object.isMesh == true){
                     object.rotation.y +=0.01;
                 }
             })*/
-            
             renderer.render(scene, camera);
         }
-
         animate();
-
-     
-        
-        
     </script>
 
 </body>
