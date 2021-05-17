@@ -209,6 +209,25 @@
 
             // END OF BOAT
 
+
+            geometry = new THREE.CylinderGeometry(.3, .2, .6);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = .1
+            scene.add(figure);
+
+
+
+            // END OF BOAT
+            geometry = new THREE.BoxGeometry(30, 30, 30);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+
+
+
             controls = new OrbitControls(camera, renderer.domElement);
             controls.maxPolarAngle = Math.PI * 0.495;
             controls.target.set(0, 10, 0);
@@ -244,9 +263,10 @@
 
             const time = performance.now() * 0.001;
 
-            mesh.position.y = Math.sin(time) * 20 + 5;
-            mesh.rotation.x = time * 0.5;
-            mesh.rotation.z = time * 0.51;
+            // mesh.position.y = Math.sin(time) * 20 + 5;
+            mesh.position.y = Math.sin(time) * 8;
+            // mesh.rotation.x = time * 0.5;
+            // mesh.rotation.z = time * 0.51;
 
             water.material.uniforms['time'].value += 1.0 / 60.0;
 
