@@ -3,6 +3,10 @@
 - Alan Zavala
 - Rubén Salazar
 
+Link repo
+https://github.com/Chito-XD/GraficasComputacionales
+
+
 Links de tutorial 
 https://www.youtube.com/watch?v=kB0ZVUrI4Aw
 
