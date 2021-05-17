@@ -40,23 +40,27 @@
 		// Variables for figures
 		var geometry, material, figure;
 
+        const texture = new THREE.TextureLoader().load( "textures/wood.jpg" );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
         // Barco
         geometry = new THREE.BoxGeometry(5,1,1);
-        material = new THREE.MeshBasicMaterial({color: 0x7f3703} );
+        material = new THREE.MeshBasicMaterial({map: texture} );
         figure = new THREE.Mesh(geometry, material);
 		figure.position.y = -2.5
         scene.add(figure);
 
         // barco
         geometry = new THREE.BoxGeometry(4,0.75,1);
-        material = new THREE.MeshBasicMaterial({color: 0x7f3703} );
+        material = new THREE.MeshBasicMaterial({map: texture} );
         figure = new THREE.Mesh(geometry, material);
         figure.position.y = -3
         scene.add(figure);
 
 		// asta del barco
         geometry = new THREE.CylinderGeometry( .1, .1, 5);
-        material = new THREE.MeshBasicMaterial({color: 0x4d1a00} );
+        material = new THREE.MeshBasicMaterial({map: texture} );
         figure = new THREE.Mesh(geometry, material);
         figure.position.y = .5;
         scene.add(figure);
@@ -84,7 +88,7 @@
 
         // Cesto
 		geometry = new THREE.CylinderGeometry(.3, .2, .6);
-		material = new THREE.MeshBasicMaterial({color: 0x4d1a00} );
+		material = new THREE.MeshBasicMaterial({map: texture} );
         figure = new THREE.Mesh(geometry, material);
         figure.position.y = .1
 		scene.add(figure);
