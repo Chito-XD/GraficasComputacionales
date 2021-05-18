@@ -1,0 +1,260 @@
+// PARA PROBAR UN OBJETO FLOTANDO PON ESTO:
+
+    // Cesto
+                geometry = new THREE.CylinderGeometry(.3, .2, .6);
+                material = new THREE.MeshStandardMaterial({ roughness: 4 });
+                figure = new THREE.Mesh(geometry, material);
+                figure.position.y = .1
+                scene.add(figure);
+
+
+
+                // END OF BOAT
+                geometry = new THREE.BoxGeometry(30, 30, 30);
+                material = new THREE.MeshStandardMaterial({ roughness: 4 });
+
+                mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+
+                //
+
+// EN LUGAR DE ESTO EN EL CÖDIGO DE ABAJO:
+
+    // Cesto
+                geometry = new THREE.CylinderGeometry(.3, .2, .6);
+                material = new THREE.MeshStandardMaterial({ roughness: 4 });
+                mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+
+                // END OF BOAT
+
+                
+
+//////// AHORA SÍ CODIGO COMPLETO
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js webgl - shaders - ocean</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+    <div id="container"></div>
+    <div id="info">
+        <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl ocean
+    </div>
+
+    <script type="module">
+
+        import * as THREE from '../build/three.module.js';
+
+        import Stats from './jsm/libs/stats.module.js';
+
+        import { GUI } from './jsm/libs/dat.gui.module.js';
+        import { OrbitControls } from './jsm/controls/OrbitControls.js';
+        import { Water } from './jsm/objects/Water.js';
+        import { Sky } from './jsm/objects/Sky.js';
+
+        let container, stats;
+        let camera, scene, renderer;
+        let controls, water, sun, mesh, figure;
+
+        init();
+        animate();
+
+        function init() {
+
+            container = document.getElementById('container');
+
+            //
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.noToneMapping = THREE.ACESFilmicToneMapping;
+            container.appendChild(renderer.domElement);
+
+            //
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 20000);
+            camera.position.set(30, 30, 100);
+
+            //
+
+            sun = new THREE.Vector3();
+
+            // Water
+
+            const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+
+            water = new Water(
+                waterGeometry,
+                {
+                    textureWidth: 512,
+                    textureHeight: 512,
+                    waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', function (texture) {
+
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+                    }),
+                    sunDirection: new THREE.Vector3(),
+                    sunColor: 0xffffff,
+                    waterColor: 0x001e0f,
+                    distortionScale: 3.7,
+                    fog: scene.fog !== undefined
+                }
+            );
+
+            water.rotation.x = - Math.PI / 2;
+
+            scene.add(water);
+
+            // Skybox
+
+            const sky = new Sky();
+            sky.scale.setScalar(10000);
+            scene.add(sky);
+
+            const skyUniforms = sky.material.uniforms;
+
+            skyUniforms['turbidity'].value = 3;
+            skyUniforms['rayleigh'].value = 1;
+            skyUniforms['mieCoefficient'].value = 0.005;
+            skyUniforms['mieDirectionalG'].value = 0.8;
+
+            const parameters = {
+                elevation: 2,
+                azimuth: 180
+            };
+
+            const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+            function updateSun() {
+
+                const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);
+                const theta = THREE.MathUtils.degToRad(parameters.azimuth);
+
+                sun.setFromSphericalCoords(1, phi, theta);
+
+                sky.material.uniforms['sunPosition'].value.copy(sun);
+                water.material.uniforms['sunDirection'].value.copy(sun).normalize();
+
+                scene.environment = pmremGenerator.fromScene(sky).texture;
+
+            }
+
+            updateSun();
+
+            //
+            // START OF BOAT
+            /* Creation of basic figures */
+            // Variables for figures
+            var geometry, material;
+            //var figure;
+
+            // Barco
+            geometry = new THREE.BoxGeometry(5,1,1);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = -2.5
+            scene.add(figure);
+
+            // barco
+            geometry = new THREE.BoxGeometry(4,0.75,1);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = -3
+            scene.add(figure);
+
+            // asta del barco
+            geometry = new THREE.CylinderGeometry( .1, .1, 5);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = .5;
+            scene.add(figure);
+
+            // Vela de arriba
+            geometry = new THREE.BoxGeometry(7,1.2,0);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = 2.4;
+            scene.add(figure);
+
+            // Vela de en medio
+            geometry = new THREE.BoxGeometry(6,1.2,0);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = 1;
+            scene.add(figure);
+
+            // Vela de en abajo
+            geometry = new THREE.BoxGeometry(5,.9,0);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            figure = new THREE.Mesh(geometry, material);
+            figure.position.y = -.3;
+            scene.add(figure);
+
+            // Cesto
+            geometry = new THREE.CylinderGeometry(.3, .2, .6);
+            material = new THREE.MeshStandardMaterial({ roughness: 4 });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // END OF BOAT
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.maxPolarAngle = Math.PI * 0.495;
+            controls.target.set(0, 10, 0);
+            controls.minDistance = 40.0;
+            controls.maxDistance = 200.0;
+            controls.update();
+
+            //
+
+            stats = new Stats();
+            container.appendChild(stats.dom);
+
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+
+        }
+
+        function render() {
+
+            const time = performance.now() * 0.001;
+
+            mesh.position.y = Math.sin(time) * 20 + 5;
+            mesh.rotation.x = time * 0.5;
+            mesh.rotation.z = time * 0.51;
+
+            water.material.uniforms['time'].value += 1.0 / 60.0;
+
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+</body>
+
+</html>
