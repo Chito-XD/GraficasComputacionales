@@ -130,7 +130,7 @@
             geometry = new THREE.BoxGeometry(80,30, 200);
             material = new THREE.MeshStandardMaterial({map: woodTexture});
             figure = new THREE.Mesh(geometry, material);
-            figure.position.y = 15;
+            figure.position.y = 0;
             scene.add(figure);
             mesh.push(figure);
 
@@ -219,9 +219,9 @@
 
         function render() {
             const time = performance.now() * 0.001;
-            // mesh.forEach(figure => {
-            //     figure.position.y =  Math.sin(time) * 3+5;
-            // });
+            mesh.forEach(figure => {
+                figure.position.y =  figure.position.y +  Math.sin(time) *.2
+            });
             water.material.uniforms['time'].value += 1.0 / 60.0;
             renderer.render(scene, camera);
         }
