@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>three.js webgl - shaders - ocean</title>
+    <title>Proyecto- Gráficas computacionales</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link type="text/css" rel="stylesheet" href="main.css">
@@ -197,6 +197,41 @@
 
             stats = new Stats();
             container.appendChild(stats.dom);
+
+            const xSpeed = 1;
+            const zSpeed = 1;
+
+            document.addEventListener("keydown", onDocumentKeyDown, false);
+            function onDocumentKeyDown(event) {
+                var keyCode = event.which;
+                if (keyCode === 87 || keyCode === 38) {
+
+                    mesh.forEach(figure => {
+                        figure.position.z =  figure.position.z -  zSpeed;
+                    });
+
+                } else if (keyCode === 83 || keyCode === 40) {
+                    
+                    mesh.forEach(figure => {
+                        figure.position.z =  figure.position.z +  zSpeed;
+                    });
+
+                } else if (keyCode === 65 || keyCode ===37) {
+                    
+                    mesh.forEach(figure => {
+                        figure.position.x =  figure.position.x - xSpeed;
+                    });
+
+                } else if (keyCode === 68  || keyCode == 39) {
+
+                    mesh.forEach(figure => {
+                        figure.position.x =  figure.position.x + xSpeed;
+                    });
+
+                }
+            };
+
+
 
         }
 
