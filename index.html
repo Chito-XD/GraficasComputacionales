@@ -34,26 +34,24 @@
 
             container = document.getElementById('container');
 
-            //
-
+            // Setear las dimensiones
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.noToneMapping = THREE.ACESFilmicToneMapping;
             container.appendChild(renderer.domElement);
 
-            //
-
+            // Crear la escena
             scene = new THREE.Scene();
 
+            // Crear la cámara
             camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 20000);
             camera.position.set(30, 30, 100);
             
-
+            // Crear el sol
             sun = new THREE.Vector3();
 
-            // Water
-
+            // Crear la geometría del agua
             const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
 
             water = new Water(
@@ -78,8 +76,7 @@
 
             scene.add(water);
 
-            // Skybox
-
+            // Crear el sol
             const sky = new Sky();
             sky.scale.setScalar(10000);
             scene.add(sky);
@@ -116,12 +113,13 @@
 
 
             /**
-             * START OF BOAT
+             * Figuras del bote
              * 
              * 
              */
             var geometry, material;
 
+            // Crea la textura de madera
             const woodTexture = new THREE.TextureLoader().load( "textures/wood.jpg" );
             woodTexture.wrapS = THREE.RepeatWrapping;
             woodTexture.wrapT = THREE.RepeatWrapping;
@@ -159,6 +157,7 @@
             scene.add(figure);
             mesh.push(figure);
 
+            // Vela de enmedio
             geometry = new THREE.BoxGeometry(185, 50, 10);
             material = new THREE.MeshStandardMaterial({color: 0xffffff});
             figure = new THREE.Mesh(geometry, material);
@@ -166,6 +165,7 @@
             scene.add(figure);
             mesh.push(figure);
 
+            // Vela de arriba
             geometry = new THREE.BoxGeometry(160, 50, 10);
             material = new THREE.MeshStandardMaterial({color: 0xffffff});
             figure = new THREE.Mesh(geometry, material);
@@ -174,16 +174,8 @@
             mesh.push(figure);
 
 
-            // Cesto
-            // geometry = new THREE.CylinderGeometry(5, 5, 5);
-            // material = new THREE.MeshStandardMaterial({ roughness: 4 });
-            // figure = new THREE.Mesh(geometry, material);
-            // figure.position.y = 100;
-            // scene.add(figure);
-            // mesh.push(figure);
-
             /**
-             * END OF BOAT
+             * Fin del bote
              * 
              * 
              */
@@ -198,6 +190,8 @@
             stats = new Stats();
             container.appendChild(stats.dom);
 
+
+            // Controles del teclado para mover el bote
             const xSpeed = 1;
             const zSpeed = 1;
 
@@ -235,6 +229,7 @@
 
         }
 
+        // Metodo para ajustar el tamaño
         function onWindowResize() {
 
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -244,14 +239,14 @@
 
         }
 
+        
         function animate() {
-
             requestAnimationFrame(animate);
             render();
             stats.update();
-
         }
 
+        // Método para hacer el render de los objetos y dar la sensación de flotación
         function render() {
             const time = performance.now() * 0.001;
             mesh.forEach(figure => {

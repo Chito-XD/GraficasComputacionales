@@ -3,13 +3,24 @@
 - Alan Zavala
 - Rubén Salazar
 
-Link repo
-https://github.com/Chito-XD/GraficasComputacionales
+# Pasos para visualizar el proyecto
+
+1) Tener VSCODE instalado. 
+2) Abrir la carpeta con VSCODE. 
+3) Instalar la extensión de Live Server y habilitarla.
+
+![plot](./imgs/liveServer.png)
+
+4) Abrir el archivo por medio de liveServer
+
+![plot](./imgs/open.png)
+
+5) Se abrirá una pestaña en su navegador predeterminado con el proyecto. 
+
+![plot](./imgs/barco.png)
 
 
-Links de tutorial 
-https://www.youtube.com/watch?v=kB0ZVUrI4Aw
+# Proyecto
+En el proyecto consiste en la animación de un barco flotando.
 
-Tree.js
-https://www.youtube.com/watch?v=6oFvqLfRnsU
-https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
+De igual manera, tiene control interactivo con las teclas WASD y flechas para dar la sensación de control de movimiento.
