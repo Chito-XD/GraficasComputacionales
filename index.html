@@ -45,8 +45,8 @@
             scene = new THREE.Scene();
 
             // Crear la cámara
-            camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 20000);
-            camera.position.set(30, 30, 100);
+            camera = new THREE.PerspectiveCamera(125, window.innerWidth / window.innerHeight, 5, 20000);
+            camera.position.set(30, -30, 300);
             
             // Crear el sol
             sun = new THREE.Vector3();
@@ -192,8 +192,8 @@
 
 
             // Controles del teclado para mover el bote
-            const xSpeed = 1;
-            const zSpeed = 1;
+            const xSpeed = 8;
+            const zSpeed = 8;
 
             document.addEventListener("keydown", onDocumentKeyDown, false);
             function onDocumentKeyDown(event) {
