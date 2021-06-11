@@ -30,7 +30,7 @@ var Lensflare = function () {
 	var positionScreen = new Vector3();
 	var positionView = new Vector3();
 
-	// textures
+	// texturas
 
 	var tempMap = new DataTexture( new Uint8Array( 16 * 16 * 3 ), 16, 16, RGBFormat );
 	tempMap.minFilter = NearestFilter;
@@ -132,7 +132,7 @@ var Lensflare = function () {
 		transparent: false
 	} );
 
-	// the following object is used for occlusionMap generation
+	// el siguiente objeto se utiliza para la generación de mapas de oclusión
 
 	var mesh1 = new Mesh( geometry, material1a );
 
@@ -186,29 +186,29 @@ var Lensflare = function () {
 		validArea.min.set( viewport.x, viewport.y );
 		validArea.max.set( viewport.x + ( viewport.z - 16 ), viewport.y + ( viewport.w - 16 ) );
 
-		// calculate position in screen space
+		// Calcular posición en el espacio de la pantalla
 
 		positionView.setFromMatrixPosition( this.matrixWorld );
 		positionView.applyMatrix4( camera.matrixWorldInverse );
 
-		if ( positionView.z > 0 ) return; // lensflare is behind the camera
+		if ( positionView.z > 0 ) return; // Efect de brillo en el lente de la cámara detrás de esta
 
 		positionScreen.copy( positionView ).applyMatrix4( camera.projectionMatrix );
 
-		// horizontal and vertical coordinate of the lower left corner of the pixels to copy
+		// coordenada horizontal y vertical de la esquina inferior izquierda de los píxeles para copiar
 
 		screenPositionPixels.x = viewport.x + ( positionScreen.x * halfViewportWidth ) + halfViewportWidth - 8;
 		screenPositionPixels.y = viewport.y + ( positionScreen.y * halfViewportHeight ) + halfViewportHeight - 8;
 
-		// screen cull
+		// selección de pantalla
 
 		if ( validArea.containsPoint( screenPositionPixels ) ) {
 
-			// save current RGB to temp texture
+			// guardar el RGB actual
 
 			renderer.copyFramebufferToTexture( screenPositionPixels, tempMap );
 
-			// render pink quad
+			// renderer cuadrado
 
 			var uniforms = material1a.uniforms;
 			uniforms[ 'scale' ].value = scale;
@@ -216,11 +216,9 @@ var Lensflare = function () {
 
 			renderer.renderBufferDirect( camera, null, geometry, material1a, mesh1, null );
 
-			// copy result to occlusionMap
-
 			renderer.copyFramebufferToTexture( screenPositionPixels, occlusionMap );
 
-			// restore graphics
+			// Restaurar los gráficos
 
 			var uniforms = material1b.uniforms;
 			uniforms[ 'scale' ].value = scale;
@@ -228,7 +226,7 @@ var Lensflare = function () {
 
 			renderer.renderBufferDirect( camera, null, geometry, material1b, mesh1, null );
 
-			// render elements
+			// Renderear elementos
 
 			var vecX = - positionScreen.x * 2;
 			var vecY = - positionScreen.y * 2;

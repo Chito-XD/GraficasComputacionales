@@ -79,7 +79,8 @@
             const sky = new Sky();
             sky.scale.setScalar(10000);
             scene.add(sky);
-
+            
+            // colocar materiales a usar en la simulación del sol
             const skyUniforms = sky.material.uniforms;
 
             skyUniforms['turbidity'].value = 3;
@@ -93,7 +94,8 @@
             };
 
             const pmremGenerator = new THREE.PMREMGenerator(renderer);
-
+            
+            // dar forma esférica al sol que le brrinde perspectiva en su posicionamiento
             function updateSun() {
 
                 const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);

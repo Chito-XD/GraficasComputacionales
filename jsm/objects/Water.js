@@ -18,13 +18,6 @@ import {
 	WebGLRenderTarget
 } from '../../../build/three.module.js';
 
-/**
- * Work based on :
- * http://slayvin.net : Flat mirror for three.js
- * http://www.adelphi.edu/~stemkoski : An implementation of water shader based on the flat mirror
- * http://29a.ch/ && http://29a.ch/slides/2012/webglwater/ : Water shader explanations in WebGL
- */
-
 var Water = function ( geometry, options ) {
 
 	Mesh.call( this, geometry );
@@ -238,7 +231,7 @@ var Water = function ( geometry, options ) {
 
 		view.subVectors( mirrorWorldPosition, cameraWorldPosition );
 
-		// Avoid rendering when mirror is facing away
+		// Evitar renderizado cual el espejo no está de frente 
 
 		if ( view.dot( normal ) > 0 ) return;
 
@@ -261,12 +254,12 @@ var Water = function ( geometry, options ) {
 		mirrorCamera.up.reflect( normal );
 		mirrorCamera.lookAt( target );
 
-		mirrorCamera.far = camera.far; // Used in WebGLBackground
+		mirrorCamera.far = camera.far;
 
 		mirrorCamera.updateMatrixWorld();
 		mirrorCamera.projectionMatrix.copy( camera.projectionMatrix );
 
-		// Update the texture matrix
+		// Actualiza la textura de la matriz
 		textureMatrix.set(
 			0.5, 0.0, 0.0, 0.5,
 			0.0, 0.5, 0.0, 0.5,
@@ -276,8 +269,8 @@ var Water = function ( geometry, options ) {
 		textureMatrix.multiply( mirrorCamera.projectionMatrix );
 		textureMatrix.multiply( mirrorCamera.matrixWorldInverse );
 
-		// Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
-		// Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
+		// Ahora actualice la matriz de proyección con un nuevo plano de recorte, implementando el código de: http://www.terathon.com/code/oblique.html
+		// Documento que explica esta técnica: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
 		mirrorPlane.setFromNormalAndCoplanarPoint( normal, mirrorWorldPosition );
 		mirrorPlane.applyMatrix4( mirrorCamera.matrixWorldInverse );
 
@@ -290,10 +283,9 @@ var Water = function ( geometry, options ) {
 		q.z = - 1.0;
 		q.w = ( 1.0 + projectionMatrix.elements[ 10 ] ) / projectionMatrix.elements[ 14 ];
 
-		// Calculate the scaled plane vector
+		// Calcular el vector plano escalado
 		clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
 
-		// Replacing the third row of the projection matrix
 		projectionMatrix.elements[ 2 ] = clipPlane.x;
 		projectionMatrix.elements[ 6 ] = clipPlane.y;
 		projectionMatrix.elements[ 10 ] = clipPlane.z + 1.0 - clipBias;
@@ -328,12 +320,12 @@ var Water = function ( geometry, options ) {
 
 		scope.visible = false;
 
-		renderer.xr.enabled = false; // Avoid camera modification and recursion
-		renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+		renderer.xr.enabled = false; // No se puede modificar la cámara 
+		renderer.shadowMap.autoUpdate = false; // evitar recalcular las sombras
 
 		renderer.setRenderTarget( renderTarget );
 
-		renderer.state.buffers.depth.setMask( true ); // make sure the depth buffer is writable so it can be properly cleared, see #18897
+		renderer.state.buffers.depth.setMask( true );
 
 		if ( renderer.autoClear === false ) renderer.clear();
 		renderer.render( scene, mirrorCamera );
@@ -345,7 +337,7 @@ var Water = function ( geometry, options ) {
 
 		renderer.setRenderTarget( currentRenderTarget );
 
-		// Restore viewport
+		// Restaurar el viewport
 
 		var viewport = camera.viewport;
 

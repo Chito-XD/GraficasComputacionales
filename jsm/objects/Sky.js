@@ -40,8 +40,11 @@ var Sky = function () {
 
 Sky.prototype = Object.create( Mesh.prototype );
 
+// Dentro del objeto "Sky", accedemos a su shader y asignamos todas las propiedades correspondientes
+
 Sky.SkyShader = {
 
+	//posicionamiento en el plano y dirección
 	uniforms: {
 		'turbidity': { value: 2 },
 		'rayleigh': { value: 1 },
@@ -65,25 +68,22 @@ Sky.SkyShader = {
 		'varying vec3 vBetaM;',
 		'varying float vSunE;',
 
-		// constants for atmospheric scattering
+		// constantes para la distribución de la atmósfera
 		'const float e = 2.71828182845904523536028747135266249775724709369995957;',
 		'const float pi = 3.141592653589793238462643383279502884197169;',
 
-		// wavelength of used primaries, according to preetham
+		// longitud de onda de las primarias usadas
 		'const vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );',
-		// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:
-		// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))
+		// cálculo previo que reemplaza la función anterior: Total Rayleigh (vec3 lambda):
 		'const vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );',
 
-		// mie stuff
-		// K coefficient for the primaries
+		// Coeficiente K para las primarias
 		'const float v = 4.0;',
 		'const vec3 K = vec3( 0.686, 0.678, 0.666 );',
 		// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K
 		'const vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );',
 
-		// earth shadow hack
-		// cutoffAngle = pi / 1.95;
+		// truco de la sombra de la tierra
 		'const float cutoffAngle = 1.6110731556870734;',
 		'const float steepness = 1.5;',
 		'const float EE = 1000.0;',
@@ -114,11 +114,9 @@ Sky.SkyShader = {
 
 		'	float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );',
 
-		// extinction (absorbtion + out scattering)
-		// rayleigh coefficients
+		// absorción y dispersión
 		'	vBetaR = totalRayleigh * rayleighCoefficient;',
 
-		// mie coefficients
 		'	vBetaM = totalMie( turbidity ) * mieCoefficient;',
 
 		'}'
@@ -137,16 +135,16 @@ Sky.SkyShader = {
 
 		'const vec3 cameraPos = vec3( 0.0, 0.0, 0.0 );',
 
-		// constants for atmospheric scattering
+		// constantes para la distribución de la atmósfera
 		'const float pi = 3.141592653589793238462643383279502884197169;',
 
-		'const float n = 1.0003;', // refractive index of air
-		'const float N = 2.545E25;', // number of molecules per unit volume for air at 288.15K and 1013mb (sea level -45 celsius)
+		'const float n = 1.0003;', // índice de refracción del aire
+		'const float N = 2.545E25;', // número de moléculas por unidad de volumen de aire
 
-		// optical length at zenith for molecules
+		// longitud óptica
 		'const float rayleighZenithLength = 8.4E3;',
 		'const float mieZenithLength = 1.25E3;',
-		// 66 arc seconds -> degrees, and the cosine of that
+
 		'const float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;',
 
 		// 3.0 / ( 16.0 * pi )
@@ -168,17 +166,16 @@ Sky.SkyShader = {
 
 		'	vec3 direction = normalize( vWorldPosition - cameraPos );',
 
-		// optical length
-		// cutoff angle at 90 to avoid singularity in next formula.
+		// longitud óptica
+		// ángulo de corte a 90 para evitar la singularidad en la siguiente fórmula.
 		'	float zenithAngle = acos( max( 0.0, dot( up, direction ) ) );',
 		'	float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );',
 		'	float sR = rayleighZenithLength * inverse;',
 		'	float sM = mieZenithLength * inverse;',
 
-		// combined extinction factor
+
 		'	vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );',
 
-		// in scattering
 		'	float cosTheta = dot( direction, vSunDirection );',
 
 		'	float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );',
@@ -190,13 +187,13 @@ Sky.SkyShader = {
 		'	vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );',
 		'	Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );',
 
-		// nightsky
+		// Cielo obscuro
 		'	float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]',
 		'	float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]',
 		'	vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );',
 		'	vec3 L0 = vec3( 0.1 ) * Fex;',
 
-		// composition + solar disc
+		// composición y solar disc
 		'	float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );',
 		'	L0 += ( vSunE * 19000.0 * Fex ) * sundisk;',
 
